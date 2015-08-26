@@ -7,6 +7,7 @@ namespace :deploy do
       else
         branch = fetch(:branch, false)
         stage = fetch(:stage, false)
+        tag_name = CapistranoDeploytags::Helper.git_tag_for(fetch(:stage)
 
         unless branch && stage
           error 'capistrano-deploytags requires that :branch and :stage be defined'
@@ -25,6 +26,7 @@ namespace :deploy do
         strategy.git "checkout #{branch}"
         info "Pulling from #{branch}"
         strategy.git "pull #{fetch(:git_remote, 'origin')} #{branch}"
+        File.write(release_path.join('REVISION'),"#{branch}-#{tag_name}")
       end
     end
   end
@@ -45,7 +47,6 @@ namespace :deploy do
           strategy.git "push #{fetch(:git_remote, 'origin')} #{tag_name}"
         end
         info "[cap-deploy-tagger] Tagged #{latest_revision} with #{tag_name}"
-        File.write(release_path.join('REVISION'),"#{branch}-#{tag_name}")
       end
     end
   end
