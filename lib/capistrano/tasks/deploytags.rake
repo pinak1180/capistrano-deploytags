@@ -43,7 +43,7 @@ namespace :deploy do
           strategy.git "tag -a #{tag_name} -m \"#{commit_message}\" #{latest_revision}"
           strategy.git "push #{fetch(:git_remote, 'origin')} #{tag_name}"
         end
-
+        upload! StringIO.new(tag_name), release_path.join('REVISION')
         info "[cap-deploy-tagger] Tagged #{latest_revision} with #{tag_name}"
       end
     end
