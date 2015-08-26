@@ -37,6 +37,7 @@ namespace :deploy do
       else
         tag_name = CapistranoDeploytags::Helper.git_tag_for(fetch(:stage))
         latest_revision = fetch(:current_revision)
+        branch = fetch(:branch, false)
         commit_message = CapistranoDeploytags::Helper.commit_message(latest_revision, fetch(:stage))
 
         unless fetch(:sshkit_backend) ==  SSHKit::Backend::Printer # unless --dry-run flag present
@@ -44,7 +45,7 @@ namespace :deploy do
           strategy.git "push #{fetch(:git_remote, 'origin')} #{tag_name}"
         end
         info "[cap-deploy-tagger] Tagged #{latest_revision} with #{tag_name}"
-        upload! StringIO.new(tag_name), release_path.join('REVISION')
+        upload! StringIO.new("#{branch}-{tag_name}"), release_path.join('REVISION')
       end
     end
   end
